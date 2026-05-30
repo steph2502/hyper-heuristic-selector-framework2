@@ -1,0 +1,5 @@
+course_code,course_title,lecturer_id,room_id,day,period
+CSC101,Intro,L1,R1,0,1
+CSC101,Intro,L1,R1,1,0
+MTH101,Math,L2,R1,0,0
+MTH101,Math,L2,R1,1,1

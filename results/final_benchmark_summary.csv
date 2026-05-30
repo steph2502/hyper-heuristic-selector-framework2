@@ -1,0 +1,4 @@
+dataset_name,method,mean_fitness,best_fitness,mean_hard_violations,best_hard_violations,mean_soft_penalty,best_soft_penalty,mean_runtime_seconds,best_runtime_seconds
+Ing0203-2,Controller,7265.0,7265.0,7.0,7,265.0,265.0,195.13183149998076,195.13183149998076
+Ing0203-2,Greedy,15202.0,15202.0,15.0,15,202.0,202.0,100.2877456000424,100.2877456000424
+Ing0203-2,PSO,2376.0,2376.0,2.0,2,376.0,376.0,217.1566548999981,217.1566548999981

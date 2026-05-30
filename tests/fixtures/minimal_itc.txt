@@ -1,0 +1,18 @@
+Name: tiny_ok
+Days: 3
+Periods_per_day: 4
+Courses: 1
+Rooms: 1
+Curricula: 1
+Constraints: 0
+
+COURSES:
+c1 t1 1 1 10
+
+ROOMS:
+r1 50
+
+CURRICULA:
+curr1 1 c1
+
+UNAVAILABILITY CONSTRAINTS:

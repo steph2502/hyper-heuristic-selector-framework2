@@ -1,0 +1,12 @@
+course_code,course_title,lecturer_id,room_id,day,period
+CSC101,Data Structures,LEC001,R-A1,0,1
+CSC101,Data Structures,LEC001,R-A1,1,0
+CSC101,Data Structures,LEC001,R-A1,0,2
+MAT201,Linear Algebra,LEC002,R-A1,0,4
+MAT201,Linear Algebra,LEC002,R-A1,3,0
+PHY101,Mechanics,LEC003,R-A1,1,2
+PHY101,Mechanics,LEC003,R-A1,2,1
+CSC202,Algorithms,LEC001,R-A1,0,3
+CSC202,Algorithms,LEC001,R-A1,2,0
+GST101,Communication Skills,LEC002,R-A1,0,0
+GST101,Communication Skills,LEC002,R-A1,1,1

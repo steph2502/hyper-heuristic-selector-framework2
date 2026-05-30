@@ -1,0 +1,4 @@
+course_code,course_title,lecturer_id,room_id,day,period
+CSC101,Data Structures,LEC001,R-DEFAULT-1,0,0
+CSC101,Data Structures,LEC001,R-DEFAULT-1,1,0
+CSC101,Data Structures,LEC001,R-DEFAULT-1,0,1

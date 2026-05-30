@@ -1,0 +1,22 @@
+Name: aco_small
+Days: 3
+Periods_per_day: 5
+Courses: 3
+Rooms: 2
+Curricula: 2
+Constraints: 0
+
+COURSES:
+c1 t1 2 2 20
+c2 t2 1 1 15
+c3 t3 1 1 10
+
+ROOMS:
+r1 30
+r2 25
+
+CURRICULA:
+cu1 2 c1 c2
+cu2 2 c1 c3
+
+UNAVAILABILITY_CONSTRAINTS:

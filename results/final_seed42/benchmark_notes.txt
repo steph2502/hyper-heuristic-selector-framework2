@@ -1,0 +1,3 @@
+PSO may outperform the controller on some datasets.
+The controller is still valid because it adaptively selects heuristics and improves over the greedy baseline.
+The objective is to evaluate whether adaptive selection improves feasibility and robustness, not to guarantee dominance over every standalone heuristic.

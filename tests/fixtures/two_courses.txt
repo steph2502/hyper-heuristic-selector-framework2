@@ -1,0 +1,20 @@
+Name: two_courses
+Days: 2
+Periods_per_day: 2
+Courses: 2
+Rooms: 1
+Curricula: 2
+Constraints: 0
+
+COURSES:
+c1 t1 1 1 10
+c2 t2 1 1 10
+
+ROOMS:
+r1 50
+
+CURRICULA:
+cu1 1 c1
+cu2 1 c2
+
+UNAVAILABILITY CONSTRAINTS:

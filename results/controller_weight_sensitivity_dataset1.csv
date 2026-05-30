@@ -1,0 +1,4 @@
+config_name,final_fitness,hard_violations,soft_penalty,runtime_seconds,selected_heuristics,aco_usage_count,pso_usage_count
+CONFIG A,22029.0,22,29.0,57.25527530000545,"[""PSO"", ""ACO"", ""PSO"", ""PSO"", ""PSO""]",1,4
+CONFIG B,22029.0,22,29.0,61.50598209997406,"[""PSO"", ""PSO"", ""PSO"", ""ACO"", ""PSO""]",1,4
+CONFIG C,22029.0,22,29.0,59.58746070001507,"[""PSO"", ""PSO"", ""PSO"", ""ACO"", ""PSO""]",1,4

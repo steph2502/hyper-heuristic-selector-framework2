@@ -1,0 +1,345 @@
+DAY 0
+--------------------------------
+Period 0
+  c0044 -> Room DS1
+  c0074 -> Room 50
+  c0080 -> Room 37
+  c0095 -> Room 52
+  c0155 -> Room 27
+  c0156 -> Room F
+  c0178 -> Room B
+  c0211 -> Room D
+  c0295 -> Room 36
+  c0297 -> Room DS2
+  c0307 -> Room 31
+  c0314 -> Room 38
+  c0346 -> Room A
+  c0386 -> Room L
+
+Period 1
+  c0066 -> Room 37
+  c0069 -> Room DS2
+  c0074 -> Room G
+  c0088 -> Room B
+  c0111 -> Room F
+  c0155 -> Room 27
+  c0195 -> Room D
+  c0219 -> Room 52
+  c0238 -> Room E
+  c0304 -> Room 31
+  c0322 -> Room 50
+  c0346 -> Room A
+  c0386 -> Room L
+  c0467 -> Room 36
+  c0470 -> Room 38
+
+Period 2
+  c0015 -> Room 36
+  c0074 -> Room G
+  c0155 -> Room 27
+  c0201 -> Room L
+  c0219 -> Room B
+  c0252 -> Room D
+  c0297 -> Room 31
+  c0336 -> Room DS2
+  c0388 -> Room 50
+  c0552 -> Room F
+  c0633 -> Room A
+
+Period 3
+  c0110 -> Room B
+  c0155 -> Room 27
+  c0156 -> Room A
+  c0157 -> Room 52
+  c0217 -> Room E
+  c0266 -> Room D
+  c0336 -> Room DS2
+  c0366 -> Room 31
+  c0368 -> Room 36
+  c0633 -> Room G
+
+Period 4
+  c0020 -> Room 36
+  c0054 -> Room D
+  c0088 -> Room G
+  c0103 -> Room E
+  c0131 -> Room B
+  c0230 -> Room F
+  c0298 -> Room 52
+  c0307 -> Room A
+  c0311 -> Room 37
+  c0366 -> Room 31
+  c0366 -> Room DS2
+  c0602 -> Room 38
+
+DAY 1
+--------------------------------
+Period 0
+  c0056 -> Room DS2
+  c0080 -> Room 37
+  c0095 -> Room DS1
+  c0113 -> Room L
+  c0155 -> Room 27
+  c0178 -> Room D
+  c0238 -> Room E
+  c0298 -> Room 52
+  c0304 -> Room 31
+  c0323 -> Room B
+  c0337 -> Room G
+  c0346 -> Room A
+  c0379 -> Room 50
+  c0467 -> Room 36
+
+Period 1
+  c0019 -> Room 38
+  c0108 -> Room DS1
+  c0115 -> Room L
+  c0155 -> Room 27
+  c0206 -> Room D
+  c0252 -> Room G
+  c0295 -> Room 36
+  c0297 -> Room 52
+  c0313 -> Room 37
+  c0327 -> Room E
+  c0336 -> Room DS2
+  c0388 -> Room 50
+  c0552 -> Room F
+  c0633 -> Room A
+
+Period 2
+  c0054 -> Room A
+  c0088 -> Room B
+  c0113 -> Room L
+  c0152 -> Room D
+  c0217 -> Room F
+  c0298 -> Room 52
+  c0307 -> Room 36
+  c0322 -> Room 50
+
+Period 3
+  c0015 -> Room 36
+  c0023 -> Room B
+  c0156 -> Room 27
+  c0252 -> Room D
+  c0266 -> Room G
+  c0288 -> Room DS2
+  c0322 -> Room 50
+  c0391 -> Room F
+  c0602 -> Room 37
+  c0638 -> Room L
+
+Period 4
+  c0020 -> Room 31
+  c0066 -> Room 36
+  c0110 -> Room E
+  c0156 -> Room 27
+  c0230 -> Room D
+  c0266 -> Room B
+  c0288 -> Room DS2
+  c0559 -> Room 37
+  c0638 -> Room A
+
+DAY 2
+--------------------------------
+Period 0
+  c0056 -> Room DS2
+  c0066 -> Room 36
+  c0127 -> Room F
+  c0156 -> Room 27
+  c0157 -> Room 52
+  c0178 -> Room B
+  c0211 -> Room L
+  c0219 -> Room DS1
+  c0279 -> Room E
+  c0302 -> Room D
+  c0304 -> Room 31
+  c0311 -> Room 37
+  c0322 -> Room 50
+  c0346 -> Room A
+
+Period 1
+  c0007 -> Room 36
+  c0019 -> Room 38
+  c0044 -> Room DS1
+  c0095 -> Room 52
+  c0110 -> Room B
+  c0115 -> Room L
+  c0156 -> Room 27
+  c0206 -> Room E
+  c0213 -> Room F
+  c0313 -> Room 37
+  c0323 -> Room D
+  c0337 -> Room G
+  c0379 -> Room DS2
+  c0388 -> Room 50
+  c0633 -> Room A
+
+Period 2
+  c0023 -> Room E
+  c0054 -> Room A
+  c0054 -> Room G
+  c0061 -> Room D
+  c0088 -> Room B
+  c0119 -> Room 50
+  c0298 -> Room DS1
+  c0366 -> Room 31
+  c0368 -> Room L
+  c0391 -> Room F
+  c0467 -> Room 36
+  c0470 -> Room 37
+
+Period 3
+  c0009 -> Room 36
+  c0058 -> Room E
+  c0076 -> Room 31
+  c0115 -> Room L
+  c0152 -> Room D
+  c0193 -> Room 52
+  c0295 -> Room 50
+  c0316 -> Room B
+  c0326 -> Room G
+  c0552 -> Room F
+  c0602 -> Room 37
+
+Period 4
+  c0058 -> Room D
+  c0131 -> Room B
+  c0186 -> Room A
+  c0297 -> Room 31
+  c0302 -> Room 50
+  c0314 -> Room 37
+  c0316 -> Room 38
+  c0480 -> Room 36
+
+DAY 3
+--------------------------------
+Period 0
+  c0044 -> Room DS1
+  c0127 -> Room L
+  c0152 -> Room D
+  c0201 -> Room B
+  c0213 -> Room E
+  c0230 -> Room G
+  c0298 -> Room 52
+  c0302 -> Room 50
+  c0307 -> Room 31
+  c0315 -> Room 37
+  c0346 -> Room A
+  c0455 -> Room 38
+  c0480 -> Room 36
+
+Period 1
+  c0007 -> Room 36
+  c0019 -> Room 38
+  c0058 -> Room D
+  c0069 -> Room DS1
+  c0076 -> Room F
+  c0108 -> Room 52
+  c0157 -> Room 27
+  c0201 -> Room B
+  c0238 -> Room E
+  c0288 -> Room DS2
+  c0322 -> Room 50
+  c0366 -> Room 31
+  c0559 -> Room 37
+  c0633 -> Room A
+
+Period 2
+  c0054 -> Room E
+  c0061 -> Room B
+  c0157 -> Room 27
+  c0186 -> Room D
+  c0193 -> Room 52
+  c0297 -> Room 31
+  c0310 -> Room L
+  c0316 -> Room 38
+  c0368 -> Room 36
+  c0455 -> Room 37
+
+Period 3
+  c0020 -> Room 36
+  c0023 -> Room D
+  c0103 -> Room E
+  c0119 -> Room 50
+  c0157 -> Room 27
+  c0295 -> Room 31
+  c0310 -> Room L
+  c0323 -> Room B
+  c0337 -> Room G
+  c0638 -> Room A
+
+Period 4
+  c0009 -> Room 36
+  c0111 -> Room E
+  c0155 -> Room G
+  c0157 -> Room 27
+  c0195 -> Room B
+  c0295 -> Room 31
+  c0310 -> Room L
+  c0313 -> Room DS2
+  c0327 -> Room D
+  c0386 -> Room A
+
+DAY 4
+--------------------------------
+Period 0
+  c0009 -> Room 37
+  c0061 -> Room B
+  c0069 -> Room DS1
+  c0108 -> Room 52
+  c0157 -> Room 27
+  c0195 -> Room E
+  c0211 -> Room D
+  c0480 -> Room 36
+  c0638 -> Room L
+
+Period 1
+  c0007 -> Room 36
+  c0015 -> Room 31
+  c0056 -> Room DS1
+  c0088 -> Room A
+  c0127 -> Room 52
+  c0129 -> Room E
+  c0156 -> Room L
+  c0186 -> Room B
+  c0206 -> Room D
+  c0213 -> Room G
+  c0327 -> Room F
+  c0379 -> Room 50
+  c0388 -> Room 27
+  c0455 -> Room 37
+
+Period 2
+  c0080 -> Room 36
+  c0113 -> Room A
+  c0129 -> Room E
+  c0217 -> Room D
+  c0279 -> Room B
+  c0307 -> Room 31
+  c0315 -> Room 37
+  c0388 -> Room 27
+  c0470 -> Room 50
+
+Period 3
+  c0103 -> Room A
+  c0119 -> Room 50
+  c0129 -> Room E
+  c0193 -> Room 52
+  c0279 -> Room B
+  c0304 -> Room 27
+  c0311 -> Room 31
+  c0315 -> Room 37
+  c0326 -> Room G
+  c0391 -> Room F
+  c0559 -> Room 36
+
+Period 4
+  c0076 -> Room 31
+  c0111 -> Room B
+  c0131 -> Room A
+  c0304 -> Room 27
+  c0314 -> Room 36
+  c0326 -> Room D
+
+UNSCHEDULED LECTURES
+  (none)
