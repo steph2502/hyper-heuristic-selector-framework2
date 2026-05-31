@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import csv
+import os
 import sys
 import time
 import uuid
@@ -40,8 +41,11 @@ try:
 except Exception:  # pragma: no cover
     load_workbook = None  # type: ignore[assignment]
 
-UPLOAD_DIR = API_DIR / "uploads"
-OUTPUT_DIR = API_DIR / "outputs"
+IS_VERCEL = os.environ.get("VERCEL") == "1"
+# Vercel functions can only write to /tmp at runtime.
+RUNTIME_DIR = Path("/tmp") if IS_VERCEL else API_DIR
+UPLOAD_DIR = RUNTIME_DIR / "uploads"
+OUTPUT_DIR = RUNTIME_DIR / "outputs"
 UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
