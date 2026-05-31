@@ -32,6 +32,7 @@ from parsers.itc_parser import (
     UnavailabilityConstraint,
     parse_itc_file,
 )
+from utils.timetable_display import getDayName, getTimeSlot
 from utils.timetable_output import export_timetable_csv
 
 try:
@@ -178,6 +179,7 @@ async def optimize(
             "total_lectures": total,
             "convergence_history": [float(x) for x in history],
             "selected_heuristics": selected,
+            "timetable_rows": _serialize_timetable_rows(state, course_meta),
             "download_url": f"/download/{output_filename}",
         }
 
@@ -200,6 +202,7 @@ async def optimize(
     output_filename = _build_output_filename(instance.name or dataset_path.stem, normalized_algo)
     output_path = OUTPUT_DIR / output_filename
     export_timetable_csv(state, instance, output_path)
+    course_meta = _course_meta_from_instance(instance)
 
     return {
         "dataset_name": instance.name or dataset_path.stem,
@@ -212,6 +215,7 @@ async def optimize(
         "total_lectures": total,
         "convergence_history": [float(x) for x in history],
         "selected_heuristics": selected,
+        "timetable_rows": _serialize_timetable_rows(state, course_meta),
         "download_url": f"/download/{output_filename}",
     }
 
@@ -256,6 +260,7 @@ def optimize_school_data(payload: dict[str, Any] = Body(...)) -> dict[str, Any]:
         "total_lectures": total,
         "convergence_history": [float(x) for x in history],
         "selected_heuristics": selected,
+        "timetable_rows": _serialize_timetable_rows(state, course_meta),
         "download_url": f"/download/{output_filename}",
     }
 
@@ -739,7 +744,16 @@ def _export_school_timetable_csv(
     with output_path.open("w", newline="", encoding="utf-8") as f:
         writer = csv.writer(f)
         writer.writerow(
-            ["course_code", "course_title", "lecturer_id", "room_id", "day", "period"]
+            [
+                "course_code",
+                "course_title",
+                "lecturer_id",
+                "room_id",
+                "day",
+                "period",
+                "day_label",
+                "time_slot",
+            ]
         )
         for assignment in state.assignments:
             info = course_meta.get(assignment.course_id, {})
@@ -754,5 +768,39 @@ def _export_school_timetable_csv(
                     room,
                     day,
                     period,
+                    getDayName(assignment.day),
+                    getTimeSlot(assignment.period),
                 ]
             )
+
+
+def _serialize_timetable_rows(
+    state: TimetableState,
+    course_meta: dict[str, dict[str, str]],
+) -> list[dict[str, Any]]:
+    rows: list[dict[str, Any]] = []
+    for assignment in state.assignments:
+        info = course_meta.get(assignment.course_id, {})
+        rows.append(
+            {
+                "course_id": assignment.course_id,
+                "course_title": info.get("course_title", ""),
+                "lecturer_id": info.get("lecturer_id", ""),
+                "room_id": assignment.room_id if assignment.room_id is not None else "UNSCHEDULED",
+                "day": assignment.day,
+                "period": assignment.period,
+                "day_label": getDayName(assignment.day),
+                "time_slot": getTimeSlot(assignment.period),
+            }
+        )
+    return rows
+
+
+def _course_meta_from_instance(instance: ITCInstance) -> dict[str, dict[str, str]]:
+    meta: dict[str, dict[str, str]] = {}
+    for course in instance.courses:
+        meta[course.course_id] = {
+            "course_title": course.course_id,
+            "lecturer_id": course.teacher_id,
+        }
+    return meta
