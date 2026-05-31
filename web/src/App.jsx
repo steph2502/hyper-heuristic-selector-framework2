@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from "react";
 
-const API_BASE = "http://127.0.0.1:8000";
+const API_BASE =  "https://hyper-heuristic-selector-framework1.vercel.app";
 
 const SIDEBAR_ITEMS = [
   { id: "dashboard", label: "Dashboard" },
@@ -25,6 +25,28 @@ const ALGORITHMS = [
   { value: "pso", label: "PSO" },
   { value: "controller", label: "Controller" }
 ];
+
+const DAY_NAMES = {
+  0: "Monday",
+  1: "Tuesday",
+  2: "Wednesday",
+  3: "Thursday",
+  4: "Friday"
+};
+
+const TIME_SLOTS = {
+  0: "8:00 AM - 10:00 AM",
+  1: "10:00 AM - 12:00 PM",
+  2: "12:00 PM - 2:00 PM",
+  3: "3:00 PM - 5:00 PM",
+  4: "5:00 PM - 7:00 PM"
+};
+
+const BREAK_PERIOD_AFTER = 2;
+const BREAK_LABEL = "BREAK";
+const BREAK_TIME = "2:00 PM - 3:00 PM";
+const DEFAULT_DAY_ORDER = [0, 1, 2, 3, 4];
+const DISPLAY_PERIOD_ORDER = [0, 1, 2, 3, 4];
 
 const SAMPLE_SCHOOL_DATA = {
   dataset_name: "Demo University",
@@ -151,6 +173,20 @@ function parseCourseCodes(text) {
     .split(",")
     .map((s) => s.trim())
     .filter((s) => s.length > 0);
+}
+
+function getDayName(day) {
+  if (day === null || day === undefined) {
+    return "UNSCHEDULED";
+  }
+  return DAY_NAMES[day] || `Day ${day}`;
+}
+
+function getTimeSlot(period) {
+  if (period === null || period === undefined) {
+    return "UNSCHEDULED";
+  }
+  return TIME_SLOTS[period] || `Period ${period}`;
 }
 
 export default function App() {
@@ -298,6 +334,87 @@ export default function App() {
       : result
         ? "Timetable Generated"
         : "System Ready";
+
+  const timetableRows = useMemo(() => {
+    if (!result?.timetable_rows || !Array.isArray(result.timetable_rows)) {
+      return [];
+    }
+
+    const dayGroups = new Map();
+    const unscheduledRows = [];
+    for (const row of result.timetable_rows) {
+      if (row.day === null || row.day === undefined) {
+        unscheduledRows.push({ ...row, type: "lecture" });
+        continue;
+      }
+      if (!dayGroups.has(row.day)) {
+        dayGroups.set(row.day, []);
+      }
+      dayGroups.get(row.day).push(row);
+    }
+
+    const rowsWithBreak = [];
+    const sortedDays = [...dayGroups.keys()].sort((a, b) => a - b);
+    for (const day of sortedDays) {
+      const lectures = [...dayGroups.get(day)].sort((a, b) => {
+        const periodA = a.period ?? Number.MAX_SAFE_INTEGER;
+        const periodB = b.period ?? Number.MAX_SAFE_INTEGER;
+        if (periodA !== periodB) {
+          return periodA - periodB;
+        }
+        return String(a.course_id || "").localeCompare(String(b.course_id || ""));
+      });
+
+      const splitAt = lectures.findIndex(
+        (lecture) => lecture.period !== null && lecture.period !== undefined && lecture.period > BREAK_PERIOD_AFTER
+      );
+      const beforeBreak = splitAt === -1 ? lectures : lectures.slice(0, splitAt);
+      const afterBreak = splitAt === -1 ? [] : lectures.slice(splitAt);
+
+      rowsWithBreak.push(...beforeBreak.map((row) => ({ ...row, type: "lecture" })));
+      rowsWithBreak.push({
+        type: "break",
+        day,
+        day_label: getDayName(day),
+        time_slot: BREAK_TIME
+      });
+      rowsWithBreak.push(...afterBreak.map((row) => ({ ...row, type: "lecture" })));
+    }
+
+    rowsWithBreak.push(...unscheduledRows);
+    return rowsWithBreak;
+  }, [result]);
+
+  const dayOrder = useMemo(() => {
+    const days = new Set(DEFAULT_DAY_ORDER);
+    if (Array.isArray(result?.timetable_rows)) {
+      for (const row of result.timetable_rows) {
+        if (typeof row.day === "number") {
+          days.add(row.day);
+        }
+      }
+    }
+    return [...days].sort((a, b) => a - b);
+  }, [result]);
+
+  const weeklyGrid = useMemo(() => {
+    const slotMap = new Map();
+    if (!Array.isArray(result?.timetable_rows)) {
+      return slotMap;
+    }
+
+    for (const row of result.timetable_rows) {
+      if (typeof row.day !== "number" || typeof row.period !== "number") {
+        continue;
+      }
+      const key = `${row.day}-${row.period}`;
+      if (!slotMap.has(key)) {
+        slotMap.set(key, []);
+      }
+      slotMap.get(key).push(row);
+    }
+    return slotMap;
+  }, [result]);
 
   function updateRow(setter, index, field, value) {
     setter((prev) =>
@@ -849,6 +966,96 @@ export default function App() {
           )}
           <span className="dataset-label">Dataset: {result.dataset_name}</span>
         </div>
+        {timetableRows.length > 0 && (
+          <div className="subcard">
+            <h4>Weekly Timetable Grid</h4>
+            <div className="table-scroll">
+              <table className="data-table compact weekly-grid-table">
+                <thead>
+                  <tr>
+                    <th>Time Slot</th>
+                    {dayOrder.map((day) => (
+                      <th key={`day-col-${day}`}>{getDayName(day)}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {DISPLAY_PERIOD_ORDER.map((period) => (
+                    <tr key={`period-row-${period}`}>
+                      <td className="time-cell">{getTimeSlot(period)}</td>
+                      {dayOrder.map((day) => {
+                        const key = `${day}-${period}`;
+                        const entries = weeklyGrid.get(key) || [];
+                        return (
+                          <td key={`slot-${key}`} className="slot-cell">
+                            {entries.length === 0 ? (
+                              <span className="slot-empty">(empty)</span>
+                            ) : (
+                              entries.map((entry, idx) => (
+                                <div
+                                  key={`entry-${entry.course_id}-${entry.room_id}-${idx}`}
+                                  className="slot-entry"
+                                >
+                                  <strong>{entry.course_id}</strong>
+                                  <span>{entry.room_id}</span>
+                                </div>
+                              ))
+                            )}
+                          </td>
+                        );
+                      })}
+                    </tr>
+                  ))}
+                  <tr className="break-row">
+                    <td className="time-cell">{BREAK_TIME}</td>
+                    <td colSpan={dayOrder.length} className="break-row-cell">
+                      {BREAK_LABEL} - no lectures
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+        {timetableRows.length > 0 && (
+          <div className="subcard">
+            <h4>Generated Timetable</h4>
+            <div className="table-scroll">
+              <table className="data-table compact timetable-table">
+                <thead>
+                  <tr>
+                    <th>Course</th>
+                    <th>Room</th>
+                    <th>Day</th>
+                    <th>Time Slot</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {timetableRows.map((row, idx) => {
+                    if (row.type === "break") {
+                      return (
+                        <tr key={`break-${row.day}-${idx}`} className="break-row">
+                          <td>{BREAK_LABEL}</td>
+                          <td>-</td>
+                          <td>{row.day_label}</td>
+                          <td>{BREAK_TIME}</td>
+                        </tr>
+                      );
+                    }
+                    return (
+                      <tr key={`${row.course_id}-${row.day}-${row.period}-${idx}`}>
+                        <td>{row.course_id}</td>
+                        <td>{row.room_id}</td>
+                        <td>{row.day_label || getDayName(row.day)}</td>
+                        <td>{row.time_slot || getTimeSlot(row.period)}</td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
         {selectedHeuristics.length > 0 && (
           <div className="heuristics-history">
             Controller Selection History: {selectedHeuristics.join(" → ")}
@@ -882,6 +1089,13 @@ export default function App() {
           <article className="metric-card"><span>Runtime</span><strong>{result.runtime_seconds}s</strong></article>
           <article className="metric-card"><span>Scheduled</span><strong>{result.scheduled_lectures}</strong></article>
           <article className="metric-card"><span>Total</span><strong>{result.total_lectures}</strong></article>
+        </div>
+        <div className="subcard">
+          <h4>Display Mapping Preview</h4>
+          <div className="preview-items">
+            <div><span>Day</span><strong>{getDayName(2)}</strong></div>
+            <div><span>Time Slot</span><strong>{getTimeSlot(3)}</strong></div>
+          </div>
         </div>
         <div className="subcard">
           <h4>Convergence History</h4>
