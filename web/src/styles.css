@@ -420,6 +420,58 @@ textarea:focus {
   color: #d6e2ff;
 }
 
+.timetable-table .break-row td {
+  background: rgba(255, 208, 82, 0.14);
+  color: #ffe7a0;
+  font-weight: 700;
+}
+
+.weekly-grid-table {
+  min-width: 900px;
+}
+
+.weekly-grid-table .time-cell {
+  min-width: 180px;
+  font-weight: 700;
+  color: #dce6ff;
+}
+
+.weekly-grid-table .slot-cell {
+  min-width: 180px;
+  vertical-align: top;
+}
+
+.weekly-grid-table .slot-entry {
+  border: 1px solid rgba(134, 154, 245, 0.26);
+  border-radius: 10px;
+  background: rgba(34, 49, 102, 0.45);
+  padding: 6px 8px;
+  margin-bottom: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.weekly-grid-table .slot-entry strong {
+  color: #f0f4ff;
+  font-size: 12px;
+}
+
+.weekly-grid-table .slot-entry span {
+  color: #b7c4e8;
+  font-size: 11px;
+}
+
+.weekly-grid-table .slot-empty {
+  color: #8fa1d4;
+  font-size: 12px;
+}
+
+.weekly-grid-table .break-row .break-row-cell {
+  text-align: center;
+  letter-spacing: 0.2px;
+}
+
 .error-banner {
   border: 1px solid rgba(255, 112, 143, 0.5);
   color: #ffd6df;
