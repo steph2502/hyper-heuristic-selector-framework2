@@ -410,6 +410,27 @@ textarea:focus {
   margin-bottom: 10px;
 }
 
+.timetable-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+}
+
+.meta-chips {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.timetable-note {
+  margin: 0 0 12px 0;
+  color: #b5c3e8;
+  font-size: 12px;
+}
+
 .dataset-label {
   color: #b3c1e8;
   font-size: 12px;
@@ -470,6 +491,7 @@ textarea:focus {
 .weekly-grid-table .break-row .break-row-cell {
   text-align: center;
   letter-spacing: 0.2px;
+  font-weight: 700;
 }
 
 .error-banner {
