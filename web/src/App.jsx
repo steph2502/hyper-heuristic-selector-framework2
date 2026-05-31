@@ -42,7 +42,6 @@ const TIME_SLOTS = {
   4: "5:00 PM - 7:00 PM"
 };
 
-const BREAK_PERIOD_AFTER = 2;
 const BREAK_LABEL = "BREAK";
 const BREAK_TIME = "2:00 PM - 3:00 PM";
 const DEFAULT_DAY_ORDER = [0, 1, 2, 3, 4];
@@ -334,67 +333,11 @@ export default function App() {
       : result
         ? "Timetable Generated"
         : "System Ready";
-
-  const timetableRows = useMemo(() => {
-    if (!result?.timetable_rows || !Array.isArray(result.timetable_rows)) {
-      return [];
-    }
-
-    const dayGroups = new Map();
-    const unscheduledRows = [];
-    for (const row of result.timetable_rows) {
-      if (row.day === null || row.day === undefined) {
-        unscheduledRows.push({ ...row, type: "lecture" });
-        continue;
-      }
-      if (!dayGroups.has(row.day)) {
-        dayGroups.set(row.day, []);
-      }
-      dayGroups.get(row.day).push(row);
-    }
-
-    const rowsWithBreak = [];
-    const sortedDays = [...dayGroups.keys()].sort((a, b) => a - b);
-    for (const day of sortedDays) {
-      const lectures = [...dayGroups.get(day)].sort((a, b) => {
-        const periodA = a.period ?? Number.MAX_SAFE_INTEGER;
-        const periodB = b.period ?? Number.MAX_SAFE_INTEGER;
-        if (periodA !== periodB) {
-          return periodA - periodB;
-        }
-        return String(a.course_id || "").localeCompare(String(b.course_id || ""));
-      });
-
-      const splitAt = lectures.findIndex(
-        (lecture) => lecture.period !== null && lecture.period !== undefined && lecture.period > BREAK_PERIOD_AFTER
-      );
-      const beforeBreak = splitAt === -1 ? lectures : lectures.slice(0, splitAt);
-      const afterBreak = splitAt === -1 ? [] : lectures.slice(splitAt);
-
-      rowsWithBreak.push(...beforeBreak.map((row) => ({ ...row, type: "lecture" })));
-      rowsWithBreak.push({
-        type: "break",
-        day,
-        day_label: getDayName(day),
-        time_slot: BREAK_TIME
-      });
-      rowsWithBreak.push(...afterBreak.map((row) => ({ ...row, type: "lecture" })));
-    }
-
-    rowsWithBreak.push(...unscheduledRows);
-    return rowsWithBreak;
-  }, [result]);
+  const hasTimetableRows =
+    Array.isArray(result?.timetable_rows) && result.timetable_rows.length > 0;
 
   const dayOrder = useMemo(() => {
-    const days = new Set(DEFAULT_DAY_ORDER);
-    if (Array.isArray(result?.timetable_rows)) {
-      for (const row of result.timetable_rows) {
-        if (typeof row.day === "number") {
-          days.add(row.day);
-        }
-      }
-    }
-    return [...days].sort((a, b) => a - b);
+    return [...DEFAULT_DAY_ORDER];
   }, [result]);
 
   const weeklyGrid = useMemo(() => {
@@ -955,18 +898,24 @@ export default function App() {
         <div className="section-header">
           <div>
             <h3>Timetable</h3>
-            <p>Generated timetable output and downloadable export.</p>
+            <p>Weekly timetable layout and downloadable detailed export.</p>
           </div>
         </div>
-        <div className="result-actions">
+        <div className="timetable-meta">
+          <div className="meta-chips">
+            <span className="dataset-label">Dataset: {result.dataset_name}</span>
+            <span className="dataset-label">
+              Algorithm: {result.algorithm ? result.algorithm.toUpperCase() : "N/A"}
+            </span>
+          </div>
           {downloadHref && (
             <a className="download-btn" href={downloadHref} target="_blank" rel="noreferrer">
               Download Generated Timetable CSV
             </a>
           )}
-          <span className="dataset-label">Dataset: {result.dataset_name}</span>
         </div>
-        {timetableRows.length > 0 && (
+        <p className="timetable-note">Download CSV to view the full detailed timetable.</p>
+        {hasTimetableRows && (
           <div className="subcard">
             <h4>Weekly Timetable Grid</h4>
             <div className="table-scroll">
@@ -993,11 +942,12 @@ export default function App() {
                             ) : (
                               entries.map((entry, idx) => (
                                 <div
-                                  key={`entry-${entry.course_id}-${entry.room_id}-${idx}`}
+                                  key={`entry-${entry.course_id}-${entry.room_id}-${entry.lecturer_id}-${idx}`}
                                   className="slot-entry"
                                 >
                                   <strong>{entry.course_id}</strong>
-                                  <span>{entry.room_id}</span>
+                                  <span>Room: {entry.room_id}</span>
+                                  <span>Lecturer: {entry.lecturer_id || "N/A"}</span>
                                 </div>
                               ))
                             )}
@@ -1007,50 +957,11 @@ export default function App() {
                     </tr>
                   ))}
                   <tr className="break-row">
-                    <td className="time-cell">{BREAK_TIME}</td>
+                    <td className="time-cell">{BREAK_LABEL}</td>
                     <td colSpan={dayOrder.length} className="break-row-cell">
-                      {BREAK_LABEL} - no lectures
+                      {BREAK_TIME} - no lectures
                     </td>
                   </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        )}
-        {timetableRows.length > 0 && (
-          <div className="subcard">
-            <h4>Generated Timetable</h4>
-            <div className="table-scroll">
-              <table className="data-table compact timetable-table">
-                <thead>
-                  <tr>
-                    <th>Course</th>
-                    <th>Room</th>
-                    <th>Day</th>
-                    <th>Time Slot</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {timetableRows.map((row, idx) => {
-                    if (row.type === "break") {
-                      return (
-                        <tr key={`break-${row.day}-${idx}`} className="break-row">
-                          <td>{BREAK_LABEL}</td>
-                          <td>-</td>
-                          <td>{row.day_label}</td>
-                          <td>{BREAK_TIME}</td>
-                        </tr>
-                      );
-                    }
-                    return (
-                      <tr key={`${row.course_id}-${row.day}-${row.period}-${idx}`}>
-                        <td>{row.course_id}</td>
-                        <td>{row.room_id}</td>
-                        <td>{row.day_label || getDayName(row.day)}</td>
-                        <td>{row.time_slot || getTimeSlot(row.period)}</td>
-                      </tr>
-                    );
-                  })}
                 </tbody>
               </table>
             </div>
