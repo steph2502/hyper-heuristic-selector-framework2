@@ -24,10 +24,12 @@ def test_export_timetable_csv_creates_file_with_columns(tmp_path: Path) -> None:
     with saved.open("r", encoding="utf-8", newline="") as f:
         reader = csv.DictReader(f)
         fieldnames = reader.fieldnames or []
-        assert "course_id" in fieldnames
-        assert "room_id" in fieldnames
-        assert "day" in fieldnames
-        assert "period" in fieldnames
+        assert "Course Code" in fieldnames
+        assert "Course Title" in fieldnames
+        assert "Lecturer ID" in fieldnames
+        assert "Room" in fieldnames
+        assert "Day" in fieldnames
+        assert "Time Slot" in fieldnames
         rows = list(reader)
         assert len(rows) == len(state.assignments)
 
@@ -42,6 +44,6 @@ def test_export_timetable_csv_marks_unscheduled(tmp_path: Path) -> None:
     with saved.open("r", encoding="utf-8", newline="") as f:
         reader = csv.DictReader(f)
         row = next(reader)
-        assert row["room_id"] == "UNSCHEDULED"
-        assert row["day"] == "UNSCHEDULED"
-        assert row["period"] == "UNSCHEDULED"
+        assert row["Room"] == "UNSCHEDULED"
+        assert row["Day"] == "UNSCHEDULED"
+        assert row["Time Slot"] == "UNSCHEDULED"
