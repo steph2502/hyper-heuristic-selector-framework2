@@ -21,7 +21,13 @@ def export_timetable_csv(
     output_path: str | Path,
 ) -> Path:
     """Export the final timetable to CSV."""
-    del instance  # kept for API symmetry and future validation hooks
+    course_meta = {
+        course.course_id: {
+            "course_title": course.course_id,
+            "lecturer_id": course.teacher_id,
+        }
+        for course in instance.courses
+    }
     out_path = Path(output_path)
     out_path.parent.mkdir(parents=True, exist_ok=True)
 
@@ -29,24 +35,25 @@ def export_timetable_csv(
         writer = csv.writer(f)
         writer.writerow(
             [
-                "course_id",
-                "room_id",
-                "day",
-                "period",
-                "day_label",
-                "time_slot",
+                "Course Code",
+                "Course Title",
+                "Lecturer ID",
+                "Room",
+                "Day",
+                "Time Slot",
             ]
         )
         for assignment in state.assignments:
+            info = course_meta.get(assignment.course_id, {})
+            course_title = info.get("course_title") or assignment.course_id
+            lecturer_id = info.get("lecturer_id", "")
             room = assignment.room_id if assignment.room_id is not None else "UNSCHEDULED"
-            day = assignment.day if assignment.day is not None else "UNSCHEDULED"
-            period = assignment.period if assignment.period is not None else "UNSCHEDULED"
             writer.writerow(
                 [
                     assignment.course_id,
+                    course_title,
+                    lecturer_id,
                     room,
-                    day,
-                    period,
                     get_day_name(assignment.day),
                     get_time_slot(assignment.period),
                 ]
