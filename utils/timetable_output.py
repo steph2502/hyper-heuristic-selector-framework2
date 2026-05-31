@@ -1,46 +1,99 @@
-"""Human-friendly display labels for timetable day/period values."""
+"""Timetable export and console visualization helpers."""
 
 from __future__ import annotations
 
-DAY_NAMES: dict[int, str] = {
-    0: "Monday",
-    1: "Tuesday",
-    2: "Wednesday",
-    3: "Thursday",
-    4: "Friday",
-}
+import csv
+from pathlib import Path
 
-TIME_SLOTS: dict[int, str] = {
-    0: "8:00 AM - 10:00 AM",
-    1: "10:00 AM - 12:00 PM",
-    2: "12:00 PM - 2:00 PM",
-    3: "3:00 PM - 5:00 PM",
-    4: "5:00 PM - 7:00 PM",
-}
-
-BREAK_LABEL = "BREAK"
-BREAK_TIME = "2:00 PM - 3:00 PM"
+from models.timetable import TimetableState
+from parsers.itc_parser import ITCInstance
+from utils.timetable_display import (
+    BREAK_LABEL,
+    BREAK_TIME,
+    get_day_name,
+    get_time_slot,
+)
 
 
-def get_day_name(day: int | None) -> str:
-    """Return display name for a day index."""
-    if day is None:
-        return "UNSCHEDULED"
-    return DAY_NAMES.get(day, f"Day {day}")
+def export_timetable_csv(
+    state: TimetableState,
+    instance: ITCInstance,
+    output_path: str | Path,
+) -> Path:
+    """Export the final timetable to CSV."""
+    del instance  # kept for API symmetry and future validation hooks
+    out_path = Path(output_path)
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+
+    with out_path.open("w", newline="", encoding="utf-8") as f:
+        writer = csv.writer(f)
+        writer.writerow(
+            [
+                "course_id",
+                "room_id",
+                "day",
+                "period",
+                "day_label",
+                "time_slot",
+            ]
+        )
+        for assignment in state.assignments:
+            room = assignment.room_id if assignment.room_id is not None else "UNSCHEDULED"
+            day = assignment.day if assignment.day is not None else "UNSCHEDULED"
+            period = assignment.period if assignment.period is not None else "UNSCHEDULED"
+            writer.writerow(
+                [
+                    assignment.course_id,
+                    room,
+                    day,
+                    period,
+                    get_day_name(assignment.day),
+                    get_time_slot(assignment.period),
+                ]
+            )
+
+    return out_path
 
 
-def get_time_slot(period: int | None) -> str:
-    """Return display label for a period index."""
-    if period is None:
-        return "UNSCHEDULED"
-    return TIME_SLOTS.get(period, f"Period {period}")
+def print_timetable(state: TimetableState, instance: ITCInstance) -> None:
+    """Print timetable grouped by day and period, plus unscheduled lectures."""
+    scheduled: dict[int, dict[int, list[tuple[str, str]]]] = {}
+    unscheduled: list[str] = []
 
+    for assignment in state.assignments:
+        if (
+            assignment.room_id is None
+            or assignment.day is None
+            or assignment.period is None
+        ):
+            unscheduled.append(assignment.course_id)
+            continue
+        day_map = scheduled.setdefault(assignment.day, {})
+        day_map.setdefault(assignment.period, []).append(
+            (assignment.course_id, assignment.room_id)
+        )
 
-def getDayName(day: int | None) -> str:
-    """Camel-case wrapper used by display callers."""
-    return get_day_name(day)
+    for day in range(instance.nr_days):
+        print(f"{get_day_name(day)}")
+        print("--------------------------------")
+        day_map = scheduled.get(day, {})
+        for period in range(instance.periods_per_day):
+            print(f"{get_time_slot(period)}")
+            entries = day_map.get(period, [])
+            if not entries:
+                print("  (empty)")
+            else:
+                for course_id, room_id in sorted(entries):
+                    print(f"  {course_id} -> Room {room_id}")
+            print()
+            if period == 2:
+                print(f"{BREAK_LABEL}: {BREAK_TIME}")
+                print("  (no lectures)")
+                print()
 
-
-def getTimeSlot(period: int | None) -> str:
-    """Camel-case wrapper used by display callers."""
-    return get_time_slot(period)
+    print("UNSCHEDULED LECTURES")
+    if not unscheduled:
+        print("  (none)")
+    else:
+        for course_id in sorted(unscheduled):
+            print(f"  {course_id}")
