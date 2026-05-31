@@ -749,29 +749,24 @@ def _export_school_timetable_csv(
         writer = csv.writer(f)
         writer.writerow(
             [
-                "course_code",
-                "course_title",
-                "lecturer_id",
-                "room_id",
-                "day",
-                "period",
-                "day_label",
-                "time_slot",
+                "Course Code",
+                "Course Title",
+                "Lecturer ID",
+                "Room",
+                "Day",
+                "Time Slot",
             ]
         )
         for assignment in state.assignments:
             info = course_meta.get(assignment.course_id, {})
             room = assignment.room_id if assignment.room_id is not None else "UNSCHEDULED"
-            day = assignment.day if assignment.day is not None else "UNSCHEDULED"
-            period = assignment.period if assignment.period is not None else "UNSCHEDULED"
+            course_title = info.get("course_title") or assignment.course_id
             writer.writerow(
                 [
                     assignment.course_id,
-                    info.get("course_title", ""),
+                    course_title,
                     info.get("lecturer_id", ""),
                     room,
-                    day,
-                    period,
                     getDayName(assignment.day),
                     getTimeSlot(assignment.period),
                 ]
@@ -785,10 +780,11 @@ def _serialize_timetable_rows(
     rows: list[dict[str, Any]] = []
     for assignment in state.assignments:
         info = course_meta.get(assignment.course_id, {})
+        course_title = info.get("course_title") or assignment.course_id
         rows.append(
             {
                 "course_id": assignment.course_id,
-                "course_title": info.get("course_title", ""),
+                "course_title": course_title,
                 "lecturer_id": info.get("lecturer_id", ""),
                 "room_id": assignment.room_id if assignment.room_id is not None else "UNSCHEDULED",
                 "day": assignment.day,
